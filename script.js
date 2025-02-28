@@ -10,9 +10,9 @@ function addTask(){
         let span =document.createElement('span');
         span.innerHTML = "\u00d7";
         li.appendChild(span);
-  }
-  inputBox.value="";
-  saveData();
+    }
+    inputBox.value="";
+    saveData();
 }
 listContainer.addEventListener("click", function (e) {
     if (e.target.tagName === "LI") {
@@ -25,7 +25,7 @@ listContainer.addEventListener("click", function (e) {
 }, false);
 function saveData(){
     localStorage.setItem("data",listContainer.innerHTML);
-     
+
 }
 function showTask(){
     listContainer.innerHTML =localStorage.getItem("data");
