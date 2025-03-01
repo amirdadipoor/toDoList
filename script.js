@@ -26,6 +26,7 @@ listContainer.addEventListener("click", function (e) {
         toggleTaskState(index)
 
     } else if (e.target.tagName === "SPAN") {
+
         const li = e.target.closest('li');
         const ul = li.parentElement;
         const index = Array.from(ul.children).indexOf(li);
