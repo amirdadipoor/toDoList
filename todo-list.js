@@ -21,11 +21,8 @@ addTodoBtn.addEventListener("click" , (e) => {
 
 });
 
-/*deleteBtns.forEach( (deleteButton) => {
-    deleteButton.addEventListener("click" , (e) => {
-        console.log(e.target)
-    })
-})*/
+
+
 
 
 createTodoElement = (text) => {
@@ -50,6 +47,7 @@ createTodoElement = (text) => {
         if (typeof newTaskText === "string" && newTaskText.length === 0 || newTaskText === null )  {
             // show error to user Enter valid data
             console.error("Enter Valid Data")
+            //alert("Hello! I am an alert box!!");
             return
         }
         if (span.innerText !== newTaskText) span.innerText = newTaskText ;
@@ -78,3 +76,14 @@ createTodoElement = (text) => {
     // console.log(li)
     return li;
 }
+
+const initAppLocalStorage = () => {
+    let appLocalStorage = localStorage.getItem('ApplicationStorage') || [];
+
+    appLocalStorage.forEach((item) => {
+        let li = createTodoElement(item.task)
+    })
+}
+
+
+initAppLocalStorage()
