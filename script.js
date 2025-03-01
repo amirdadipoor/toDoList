@@ -48,12 +48,12 @@ const initAppLocalStorage = () => {
 }
 
 const addNewTaskToAppLocalStorage = (task) => {
-    let myTasks = new Set( JSON.parse(localStorage.getItem("tasks")) || [])
+    let myTasks = JSON.parse(localStorage.getItem("tasks")) || [] //)
 
     const newTask = { task, done: false };
-    myTasks.add(newTask);
+    myTasks.push(newTask);
 
-    localStorage.setItem("tasks", JSON.stringify([...myTasks]));
+    localStorage.setItem("tasks", JSON.stringify(myTasks));
 }
 
 const appendTaskToList = (task , state = false) => {
