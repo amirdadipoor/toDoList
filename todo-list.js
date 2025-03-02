@@ -12,10 +12,11 @@ addTodoBtn.addEventListener("click" , (e) => {
     let todoText = inputTodoText.value.trim() ;
     if (typeof todoText === "string" && todoText.length === 0 || todoText === null )  {
         // show error to user Enter valid data
+        alert("Enter Valid Data");
         console.error("Enter Valid Data")
-        return
+        //return false;
     }
-    let li = createTodoElement(todoText);
+    let li = createTodoElement(todoText , false);
     todolistUL.append(li);
     todoInput.value = '';
 
@@ -25,19 +26,27 @@ addTodoBtn.addEventListener("click" , (e) => {
 
 
 
-createTodoElement = (text) => {
-    let li = document.createElement("ul");
+createTodoElement = (taskText, taskState) => {
+    let li = document.createElement("li");
+    let checkbox = document.createElement("input");
     let span = document.createElement("span");
     let editBtn = document.createElement("button");
     let deleteBtn = document.createElement("Button");
 
-    li.className = "flex justify-between items-center bg-gray-200 p-2 rounded-md";
-    span.className = "flex-1";
-    editBtn.className = "edit-btn bg-yellow-500 text-white px-2 py-1 rounded ml-2";
-    deleteBtn.className = "delete-btn bg-red-500 text-white px-2 py-1 rounded ml-2";
-    span.innerText = text;
-    editBtn.innerText = "Edit";
-    deleteBtn.innerText = "Remove";
+    li.className = "flex items-center bg-gray-200 p-2 rounded";
+
+    checkbox.className = "mr-2";
+    checkbox.type = "checkbox";
+
+    span.className = taskState ? "flex-1 cursor-pointer line-through text-gray-500" : "flex-1 cursor-pointer";
+    span.textContent = taskText;
+
+    editBtn.className = "ml-2 text-blue-500 hover:text-blue-700";
+    editBtn.textContent = "✏️";
+
+    deleteBtn.className = "ml-2 text-red-500 hover:text-red-700";
+    deleteBtn.textContent = "❌";
+
 
     editBtn.addEventListener("click" , (e) => {
         let span = e.target.parentElement.firstChild;
@@ -57,6 +66,12 @@ createTodoElement = (text) => {
         //console.log("Edit btn clicked")
     });
 
+    checkbox.addEventListener("change" , (e) => {
+        //console.log(checkbox.checked);
+        span.classList.toggle("line-through");
+        span.classList.toggle("text-gray-500");
+    })
+
     deleteBtn.addEventListener("click" , (e) => {
         //console.log("Delete btn clicked")
         //let parent = e.target.p
@@ -64,16 +79,12 @@ createTodoElement = (text) => {
         e.target.parentElement.remove();
     });
 
+    li.appendChild(checkbox);
     li.appendChild(span)
     li.appendChild(editBtn)
     li.appendChild(deleteBtn)
 
-    /*li.innerHTML =
-        `<span class="flex-1">${text}</span>
-        <button class="edit-btn bg-yellow-500 text-white px-2 py-1 rounded ml-2">Edit</button>
-        <button class="delete-btn bg-red-500 text-white px-2 py-1 rounded ml-2">Remove</button>`*/
 
-    // console.log(li)
     return li;
 }
 
@@ -86,4 +97,4 @@ const initAppLocalStorage = () => {
 }
 
 
-initAppLocalStorage()
+//initAppLocalStorage()
