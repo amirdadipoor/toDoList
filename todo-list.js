@@ -16,8 +16,8 @@ addTodoBtn.addEventListener("click" , (e) => {
         console.error("Enter Valid Data")
         //return false;
     }
-    let li = createTodoElement(todoText , false);
-    todolistUL.append(li);
+    createAndAddTodoElement(todoText , false);
+    addNewTaskToAppLocalStorage(todoText)
     todoInput.value = '';
 
 });
@@ -26,7 +26,7 @@ addTodoBtn.addEventListener("click" , (e) => {
 
 
 
-createTodoElement = (taskText, taskState) => {
+createAndAddTodoElement = (taskText, taskState) => {
     let li = document.createElement("li");
     let checkbox = document.createElement("input");
     let span = document.createElement("span");
@@ -37,6 +37,8 @@ createTodoElement = (taskText, taskState) => {
 
     checkbox.className = "mr-2";
     checkbox.type = "checkbox";
+
+    taskState ? checkbox.checked = true : checkbox.checked = false;
 
     span.className = taskState ? "flex-1 cursor-pointer line-through text-gray-500" : "flex-1 cursor-pointer";
     span.textContent = taskText;
@@ -49,8 +51,9 @@ createTodoElement = (taskText, taskState) => {
 
 
     editBtn.addEventListener("click" , (e) => {
-        let span = e.target.parentElement.firstChild;
-        let newTaskText = prompt("Please enter new Task : " , span.innerText).trim();
+        //let span = e.target.closest("span");
+        console.log(span);
+        let newTaskText = prompt("Please enter new Task : " , span.textContent).trim();
 
         //console.log(span);
         if (typeof newTaskText === "string" && newTaskText.length === 0 || newTaskText === null )  {
@@ -59,23 +62,46 @@ createTodoElement = (taskText, taskState) => {
             //alert("Hello! I am an alert box!!");
             return
         }
-        if (span.innerText !== newTaskText) span.innerText = newTaskText ;
-        else console.log("equal text old text");
+        if (span.textContent !== newTaskText) {
 
+            const li = e.target.closest('li'); // Ensure we're selecting the correct <li>
+            const ul = li.parentElement;
+            const index = Array.from(ul.children).indexOf(li);
+
+            modifyTaskName(newTaskText , index)
+            span.textContent = newTaskText
+        } else {
+            alert("equal text old text");
+            console.log("equal text old text");
+        }
 
         //console.log("Edit btn clicked")
     });
 
     checkbox.addEventListener("change" , (e) => {
         //console.log(checkbox.checked);
+
+        const li = e.target.closest('li'); // Ensure we're selecting the correct <li>
+        const ul = li.parentElement;
+        const index = Array.from(ul.children).indexOf(li);
+
+        toggleTaskState(index);
+
         span.classList.toggle("line-through");
         span.classList.toggle("text-gray-500");
+
     })
 
     deleteBtn.addEventListener("click" , (e) => {
         //console.log("Delete btn clicked")
         //let parent = e.target.p
         //console.log()
+
+        const li = e.target.closest('li'); // Ensure we're selecting the correct <li>
+        const ul = li.parentElement;
+        const index = Array.from(ul.children).indexOf(li);
+
+        deleteTask(index);
         e.target.parentElement.remove();
     });
 
@@ -85,16 +111,47 @@ createTodoElement = (taskText, taskState) => {
     li.appendChild(deleteBtn)
 
 
-    return li;
+    todolistUL.append(li);
+    return true;
 }
 
 const initAppLocalStorage = () => {
-    let appLocalStorage = localStorage.getItem('ApplicationStorage') || [];
+    //console.log("aaaaa");
+    let appLocalStorage = JSON.parse(localStorage.getItem('ApplicationStorage')) || [];
+    //console.log(appLocalStorage);
 
     appLocalStorage.forEach((item) => {
-        let li = createTodoElement(item.task)
+        createAndAddTodoElement(item.task , item.done)
     })
 }
 
 
-//initAppLocalStorage()
+const addNewTaskToAppLocalStorage = (task) => {
+    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage")) || [] //)
+
+    const newTask = { task, done: false };
+    myTasks.push(newTask);
+
+    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+}
+
+const toggleTaskState = (index) => {
+    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage"))
+    myTasks[index].done = !myTasks[index].done
+    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+}
+
+const modifyTaskName = (taskName , index) => {
+    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage"))
+    myTasks[index].task = taskName
+    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+}
+
+const deleteTask = (index) => {
+    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage"))
+    myTasks.splice(index, 1);
+    //console.log(myTasks);
+    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+}
+
+initAppLocalStorage()
