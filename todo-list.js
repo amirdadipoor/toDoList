@@ -117,7 +117,7 @@ createAndAddTodoElement = (taskText, taskState) => {
 
 const initAppLocalStorage = () => {
     //console.log("aaaaa");
-    let appLocalStorage = JSON.parse(localStorage.getItem('ApplicationStorage')) || [];
+    let myTasks = loadLocalStorage();
     //console.log(appLocalStorage);
 
     appLocalStorage.forEach((item) => {
@@ -127,31 +127,40 @@ const initAppLocalStorage = () => {
 
 
 const addNewTaskToAppLocalStorage = (task) => {
-    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage")) || [] //)
+    let myTasks = loadLocalStorage();
 
     const newTask = { task, done: false };
     myTasks.push(newTask);
 
-    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+    saveLocalStorage(myTasks);
 }
 
 const toggleTaskState = (index) => {
-    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage"))
+    let myTasks = loadLocalStorage();
     myTasks[index].done = !myTasks[index].done
-    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+    saveLocalStorage(myTasks);
 }
 
 const modifyTaskName = (taskName , index) => {
-    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage"))
+    let myTasks = loadLocalStorage();
     myTasks[index].task = taskName
-    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+    saveLocalStorage(myTasks);
 }
 
 const deleteTask = (index) => {
-    let myTasks = JSON.parse(localStorage.getItem("ApplicationStorage"))
+    let myTasks = loadLocalStorage();
     myTasks.splice(index, 1);
     //console.log(myTasks);
-    localStorage.setItem("ApplicationStorage", JSON.stringify(myTasks));
+    saveLocalStorage(myTasks);
+}
+
+const loadLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("ApplicationStorage")) || [] ;
+}
+
+const saveLocalStorage = (data = []) => {
+    return localStorage.setItem("ApplicationStorage", JSON.stringify(data));
+
 }
 
 initAppLocalStorage()
