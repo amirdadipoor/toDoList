@@ -117,7 +117,7 @@ createAndAddTodoElement = (taskText, taskState) => {
 
 const initAppLocalStorage = () => {
     //console.log("aaaaa");
-    let myTasks = loadLocalStorage();
+    let appLocalStorage = loadLocalStorage();
     //console.log(appLocalStorage);
 
     appLocalStorage.forEach((item) => {
