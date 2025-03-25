@@ -14,6 +14,7 @@ module.exports = {
         path : path.resolve(__dirname,'dist'),
         filename: "[name].[contenthash].js",
     },
+    stats: 'normal',
     devServer : {
         static: path.resolve(__dirname, "dist"), // Serve files from "dist"
         port: 8989, // Choose any port
