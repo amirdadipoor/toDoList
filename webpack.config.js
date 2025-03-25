@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path')
 
@@ -32,10 +33,18 @@ module.exports = {
             title: "ToDo App",
             template: "./src/index.html",
             filename: "index.html",
+            minify : false,
         }),
-        new MiniCssExtractPlugin(
-            { filename: "styles.css"
+        new MiniCssExtractPlugin({
+            filename:  '[name].[contenthash].css'
         }),
         new CleanWebpackPlugin(),
     ],
+    optimization: {
+        minimizer: [
+            // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
+            // `...`,
+            new CssMinimizerPlugin(),
+        ],
+    },
 }
