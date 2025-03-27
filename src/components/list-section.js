@@ -62,7 +62,7 @@ class ListSection {
 
         // define event listeners
         myCheckbox.addEventListener("change" , (e) => this.checkBoxToggleEventListener(e , mySpan));
-        editButton.addEventListener("click" , (e) => this.editButtonClickEventListener(e));
+        editButton.addEventListener("click" , (e) => this.editButtonClickEventListener(e , mySpan));
         deleteButton.addEventListener("click" , (e) => this.deleteButtonClickEventListener(e));
 
         // add elements to list items
@@ -80,11 +80,37 @@ class ListSection {
         span.classList.toggle("text-gray-500");
     }
 
-    editButtonClickEventListener = (event) => {
-        console.log("EditButton event", event);
+    editButtonClickEventListener = (event , span) => {
+        let itemIndex = this.findTaskIndexInList(event);
+        Swal.fire({
+            title: "Enter New Task name",
+            input: "text",
+            inputPlaceholder: "Type your new task name here...",
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            preConfirm: (value) => {
+                if (!value || value === span.innerText) {
+                    Swal.showValidationMessage("You need to enter something!");
+                }
+                return value;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.modifyTaskName(result.value , itemIndex)
+                span.innerText = result.value;
+                Swal.fire({
+                    icon: "success",
+                    title: "Task Updated",
+                    timer: 3000,
+                    showCloseButton: true,
+                    timerProgressBar: true,
+                });
+            }
+        });
     }
 
     deleteButtonClickEventListener = (event) => {
+        let itemIndex = this.findTaskIndexInList(event);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -99,7 +125,7 @@ class ListSection {
             if (result.isConfirmed) {
 
                 event.target.parentElement.remove();
-                this.deleteTask(this.findTaskIndexInList(event));
+                this.deleteTask(itemIndex);
 
                 Swal.fire({
                     title: "Deleted!",
@@ -134,7 +160,7 @@ class ListSection {
     findTaskIndexInList = (event) => {
         let li = event.target.closest('li'); // Ensure we're selecting the correct <li>
         //console.log(li);
-        return Array.from(this.listElement.children).indexOf(li);
+        return  Array.from(this.listElement.children).indexOf(li);
     }
 
     toggleTaskState = (index) => {
@@ -147,6 +173,12 @@ class ListSection {
         let myTasks = StorageHelper.getTasksFromLocalStorage();
         myTasks.splice(index, 1);
         StorageHelper.saveTaskToLocalStorage(myTasks)
+    }
+
+    modifyTaskName = (taskName , index) => {
+        let myTasks = StorageHelper.getTasksFromLocalStorage();
+        myTasks[index].task = taskName
+        StorageHelper.saveTaskToLocalStorage(myTasks);
     }
 
     render() {
