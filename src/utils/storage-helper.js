@@ -6,7 +6,7 @@ class StorageHelper {
         return JSON.parse(localStorage.getItem(this.storageName)) || [] ;
     }
 
-    saveLocalStorage = (data = []) => {
+    saveTaskToLocalStorage = (data = []) => {
         localStorage.setItem(this.storageName, JSON.stringify(data));
     }
 
